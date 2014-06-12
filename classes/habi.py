@@ -113,14 +113,21 @@ class habi:
 
 
     def checkgems(self):
-       self.itemcollection= self.scene_service.sceneItems()
        print "Looking for any gems on stage..."
+       threads = 30
+       gems = 0
        for x in self.itemcollection:
-
           if (x['sceneItemType'] == "Gem"):
+              gems += 1
+              for i in range(threads):
+                  t = Thread(target=self.collectGem, args=(x['m_id'],))
+                  t.start()
+       if gems > 0:
+          print "%d Gems Thread-Collected" % gems
+          
+    def collectGem(self, gem_id):
+      self.scene_service.collectGem(str(gem_id))
 
-             if str((self.scene_service.collectGem(str(x['m_id']))) == "True"):
-                print "Collected gem id#" + str(x['m_id'])
 
     def counthouses(self):
 
